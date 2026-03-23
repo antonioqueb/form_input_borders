@@ -146,15 +146,24 @@ $input-bg-readonly: #f8f8f8;
     .o_field_boolean,
     .o_field_widget.o_field_boolean {
 
-        // The actual hidden input
+        // The actual input
         input[type="checkbox"] {
             // Reset — don't apply underline mixin
-            border: revert !important;
-            border-bottom: revert !important;
-            border-radius: revert !important;
+            border: 2px solid #bbbbbb !important;
+            border-bottom: 2px solid #bbbbbb !important;
+            border-radius: 4px !important;
+            background-color: #ffffff !important;
+            appearance: auto !important;
+            width: 1.15em !important;
+            height: 1.15em !important;
+            cursor: pointer;
+
+            &:hover {
+                border-color: #999999 !important;
+            }
 
             &:checked {
-                accent-color: #714B67 !important; // Odoo primary purple
+                accent-color: #714B67 !important;
                 background-color: #714B67 !important;
                 border-color: #714B67 !important;
             }
@@ -164,6 +173,14 @@ $input-bg-readonly: #f8f8f8;
         .form-check-input,
         .o_boolean_toggle input,
         .custom-control-input {
+            // Unchecked — visible border
+            border: 2px solid #bbbbbb !important;
+            background-color: #ffffff !important;
+            cursor: pointer;
+
+            &:hover {
+                border-color: #999999 !important;
+            }
 
             &:checked {
                 background-color: #714B67 !important;
