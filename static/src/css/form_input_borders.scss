@@ -1,0 +1,181 @@
+// =============================================================================
+// Form Input Borders — Odoo 19
+// Adds subtle neutral borders to all form inputs and selects so they are
+// always visible, not only on focus/hover.
+// =============================================================================
+
+// --- Variables ---------------------------------------------------------------
+$input-border-color: #cccccc;
+$input-border-color-hover: #aaaaaa;
+$input-border-color-focus: #999999;
+$input-border-radius: 4px;
+$input-bg: #ffffff;
+$input-bg-readonly: #f5f5f5;
+
+// --- Main rules --------------------------------------------------------------
+// Target only the form view sheet area to avoid polluting list/kanban/search.
+.o_form_view {
+
+    .o_form_sheet,
+    .o_group,
+    .o_inner_group,
+    .o_wrap_field {
+
+        // All standard text-like inputs
+        input.o_input,
+        input.o_field_widget,
+        textarea.o_input,
+        textarea.o_field_widget,
+        .o_input > input,
+        .o_field_widget input,
+        .o_field_widget textarea {
+            border: 1px solid $input-border-color !important;
+            border-radius: $input-border-radius !important;
+            background-color: $input-bg !important;
+            padding: 4px 8px !important;
+            transition: border-color 0.15s ease-in-out;
+
+            &:hover {
+                border-color: $input-border-color-hover !important;
+            }
+
+            &:focus {
+                border-color: $input-border-color-focus !important;
+                outline: none !important;
+                box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08) !important;
+            }
+
+            // Readonly / disabled
+            &[readonly],
+            &[disabled],
+            &.o_readonly {
+                background-color: $input-bg-readonly !important;
+                border-color: #dddddd !important;
+                cursor: default;
+            }
+        }
+
+        // Select / dropdown triggers
+        select.o_input,
+        select.o_field_widget,
+        .o_field_widget select {
+            border: 1px solid $input-border-color !important;
+            border-radius: $input-border-radius !important;
+            background-color: $input-bg !important;
+            padding: 4px 8px !important;
+            transition: border-color 0.15s ease-in-out;
+
+            &:hover {
+                border-color: $input-border-color-hover !important;
+            }
+
+            &:focus {
+                border-color: $input-border-color-focus !important;
+                outline: none !important;
+                box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08) !important;
+            }
+        }
+
+        // Many2one / Many2many wrapper — the div that wraps the input
+        .o_field_many2one,
+        .o_field_many2many,
+        .o_field_many2many_tags {
+
+            .o_input_dropdown,
+            .o_input,
+            > .o_external_button ~ input,
+            > div > input {
+                border: 1px solid $input-border-color !important;
+                border-radius: $input-border-radius !important;
+                background-color: $input-bg !important;
+            }
+
+            &:hover .o_input_dropdown,
+            &:hover .o_input {
+                border-color: $input-border-color-hover !important;
+            }
+        }
+
+        // Date / Datetime pickers
+        .o_field_date,
+        .o_field_datetime {
+            .o_datepicker {
+                border: 1px solid $input-border-color !important;
+                border-radius: $input-border-radius !important;
+                background-color: $input-bg !important;
+
+                input {
+                    border: none !important;
+                }
+
+                &:hover {
+                    border-color: $input-border-color-hover !important;
+                }
+
+                &:focus-within {
+                    border-color: $input-border-color-focus !important;
+                    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08) !important;
+                }
+            }
+        }
+
+        // Monetary fields (input inside a wrapper with currency symbol)
+        .o_field_monetary {
+            input {
+                border: 1px solid $input-border-color !important;
+                border-radius: $input-border-radius !important;
+                background-color: $input-bg !important;
+            }
+        }
+
+        // Selection field rendered as div (radio-like dropdowns)
+        .o_field_selection {
+            select {
+                border: 1px solid $input-border-color !important;
+                border-radius: $input-border-radius !important;
+                background-color: $input-bg !important;
+                padding: 4px 8px !important;
+            }
+        }
+    }
+
+    // --- Inside editable dialogs / modals ------------------------------------
+    .modal-body {
+        input.o_input,
+        input.o_field_widget,
+        textarea.o_input,
+        select.o_input,
+        .o_field_widget input,
+        .o_field_widget select,
+        .o_field_widget textarea {
+            border: 1px solid $input-border-color !important;
+            border-radius: $input-border-radius !important;
+            background-color: $input-bg !important;
+            padding: 4px 8px !important;
+
+            &:hover {
+                border-color: $input-border-color-hover !important;
+            }
+
+            &:focus {
+                border-color: $input-border-color-focus !important;
+                outline: none !important;
+                box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08) !important;
+            }
+        }
+    }
+
+    // --- Editable list inside form (one2many inline) -------------------------
+    .o_list_editable,
+    .o_field_one2many .o_list_renderer {
+        td.o_data_cell {
+            input,
+            select {
+                border: 1px solid $input-border-color !important;
+                border-radius: $input-border-radius !important;
+                background-color: $input-bg !important;
+                padding: 2px 6px !important;
+            }
+        }
+    }
+}
