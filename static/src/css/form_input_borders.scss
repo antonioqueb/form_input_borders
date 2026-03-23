@@ -1,7 +1,7 @@
 // =============================================================================
 // Form Input Borders — Odoo 19
 // Subtle bottom-line on all form inputs/selects so they're always visible.
-// Also fixes checkbox visual feedback on toggle.
+// Also fixes checkbox and radio button visual feedback.
 // =============================================================================
 
 // --- Variables ---------------------------------------------------------------
@@ -55,7 +55,7 @@ $input-bg-readonly: #f8f8f8;
         textarea.o_input,
         textarea.o_field_widget,
         .o_input > input,
-        .o_field_widget input:not([type="checkbox"]),
+        .o_field_widget input:not([type="checkbox"]):not([type="radio"]),
         .o_field_widget textarea {
             @include input-underline;
         }
@@ -77,7 +77,7 @@ $input-bg-readonly: #f8f8f8;
                 @include input-underline;
             }
 
-            input:not([type="checkbox"]) {
+            input:not([type="checkbox"]):not([type="radio"]) {
                 border: none !important;
                 border-radius: 0 !important;
                 background-color: transparent !important;
@@ -101,7 +101,7 @@ $input-bg-readonly: #f8f8f8;
 
         // Monetary
         .o_field_monetary {
-            input:not([type="checkbox"]) {
+            input:not([type="checkbox"]):not([type="radio"]) {
                 @include input-underline;
             }
         }
@@ -120,7 +120,7 @@ $input-bg-readonly: #f8f8f8;
         input.o_field_widget,
         textarea.o_input,
         select.o_input,
-        .o_field_widget input:not([type="checkbox"]),
+        .o_field_widget input:not([type="checkbox"]):not([type="radio"]),
         .o_field_widget select,
         .o_field_widget textarea {
             @include input-underline;
@@ -131,7 +131,7 @@ $input-bg-readonly: #f8f8f8;
     .o_list_editable,
     .o_field_one2many .o_list_renderer {
         td.o_data_cell {
-            input:not([type="checkbox"]),
+            input:not([type="checkbox"]):not([type="radio"]),
             select {
                 @include input-underline;
             }
@@ -140,15 +140,11 @@ $input-bg-readonly: #f8f8f8;
 
     // =========================================================================
     // FIX: Checkbox / Boolean visual feedback
-    // In Odoo 19 the custom checkbox sometimes doesn't reflect the checked
-    // state visually. Force the :checked pseudo-class styling.
     // =========================================================================
     .o_field_boolean,
     .o_field_widget.o_field_boolean {
 
-        // The actual input
         input[type="checkbox"] {
-            // Reset — don't apply underline mixin
             border: 2px solid #bbbbbb !important;
             border-bottom: 2px solid #bbbbbb !important;
             border-radius: 4px !important;
@@ -169,11 +165,9 @@ $input-bg-readonly: #f8f8f8;
             }
         }
 
-        // Odoo's custom toggle / checkbox wrapper
         .form-check-input,
         .o_boolean_toggle input,
         .custom-control-input {
-            // Unchecked — visible border
             border: 2px solid #bbbbbb !important;
             background-color: #ffffff !important;
             cursor: pointer;
@@ -202,13 +196,42 @@ $input-bg-readonly: #f8f8f8;
             }
         }
 
-        // Bootstrap 5 form-switch used in Odoo 19
         .form-switch {
             .form-check-input {
                 &:checked {
                     background-color: #714B67 !important;
                     border-color: #714B67 !important;
                     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e") !important;
+                }
+            }
+        }
+    }
+
+    // =========================================================================
+    // FIX: Radio buttons
+    // =========================================================================
+    .o_field_radio,
+    .o_field_widget.o_field_radio {
+        .o_radio_item {
+            input[type="radio"].o_radio_input {
+                border: 2px solid #bbbbbb !important;
+                border-bottom: 2px solid #bbbbbb !important;
+                border-radius: 50% !important;
+                background-color: #ffffff !important;
+                appearance: auto !important;
+                width: 1.15em !important;
+                height: 1.15em !important;
+                cursor: pointer;
+                box-shadow: none !important;
+
+                &:hover {
+                    border-color: #999999 !important;
+                }
+
+                &:checked {
+                    accent-color: #714B67 !important;
+                    background-color: #714B67 !important;
+                    border-color: #714B67 !important;
                 }
             }
         }
