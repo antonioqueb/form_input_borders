@@ -1,7 +1,11 @@
 // =============================================================================
 // Form Input Borders — Odoo 19
-// Subtle bottom-line on all form inputs/selects so they're always visible.
-// Also fixes checkbox and radio button visual feedback.
+// Alphaqueb Consulting
+//
+// Objetivo:
+// - Agregar borde inferior sutil a inputs/selects de formularios principales.
+// - NO aplicar ese borde dentro de vistas de lista embebidas.
+// - Mantener checkboxes/radios visibles.
 // =============================================================================
 
 // --- Variables ---------------------------------------------------------------
@@ -10,7 +14,7 @@ $input-line-color-hover: #aaaaaa;
 $input-line-color-focus: #666666;
 $input-bg-readonly: #f8f8f8;
 
-// --- Mixin -------------------------------------------------------------------
+// --- Mixin: underline para campos raíz de formulario -------------------------
 @mixin input-underline {
     border-top: none !important;
     border-left: none !important;
@@ -21,7 +25,6 @@ $input-bg-readonly: #f8f8f8;
     box-shadow: none !important;
     transition: border-color 0.15s ease-in-out;
 
-    // Force text to always be visible
     color: inherit !important;
     -webkit-text-fill-color: inherit !important;
 
@@ -58,7 +61,7 @@ $input-bg-readonly: #f8f8f8;
     }
 }
 
-// --- Force text color on Odoo field widgets in all states --------------------
+// --- Mixin: asegurar visibilidad de texto ------------------------------------
 @mixin field-text-visible {
     color: inherit !important;
     -webkit-text-fill-color: inherit !important;
@@ -69,9 +72,43 @@ $input-bg-readonly: #f8f8f8;
     }
 }
 
-// --- Main rules --------------------------------------------------------------
+// --- Mixin: reset para inputs dentro de listas embebidas ----------------------
+@mixin embedded-list-input-reset {
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-bottom: none !important;
+    border-radius: 0 !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
+    transition: none !important;
+
+    &:hover,
+    &:focus,
+    &:focus-within,
+    &[readonly],
+    &[disabled],
+    &.o_readonly {
+        border-top: none !important;
+        border-left: none !important;
+        border-right: none !important;
+        border-bottom: none !important;
+        background-color: transparent !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+}
+
+// =============================================================================
+// Main rules
+// =============================================================================
+
 .o_form_view {
 
+    // -------------------------------------------------------------------------
+    // Campos principales del formulario
+    // -------------------------------------------------------------------------
     .o_form_sheet,
     .o_group,
     .o_inner_group,
@@ -97,9 +134,8 @@ $input-bg-readonly: #f8f8f8;
             @include field-text-visible;
         }
 
-        // Many2one / Many2many — the wrapper AND inner input
+        // Many2one / Many2many tags
         .o_field_many2one,
-        .o_field_many2many,
         .o_field_many2many_tags {
 
             .o_input_dropdown,
@@ -147,7 +183,7 @@ $input-bg-readonly: #f8f8f8;
             }
         }
 
-        // Char / Text fields that Odoo renders as spans in readonly
+        // Char / Text / Integer / Float readonly visibility
         .o_field_char,
         .o_field_text,
         .o_field_integer,
@@ -162,7 +198,9 @@ $input-bg-readonly: #f8f8f8;
         }
     }
 
-    // --- Modals --------------------------------------------------------------
+    // -------------------------------------------------------------------------
+    // Modales / Wizards
+    // -------------------------------------------------------------------------
     .modal-body {
         input.o_input,
         input.o_field_widget,
@@ -176,20 +214,55 @@ $input-bg-readonly: #f8f8f8;
         }
     }
 
-    // --- One2many inline editable list ---------------------------------------
-    .o_list_editable,
-    .o_field_one2many .o_list_renderer {
+    // =========================================================================
+    // IMPORTANTE:
+    // No aplicar borde inferior dentro de listas embebidas.
+    //
+    // Esto neutraliza los estilos anteriores cuando el input vive dentro de:
+    // - one2many editable
+    // - many2many editable/list
+    // - listas dentro de formularios
+    // - listas dentro de modales
+    // =========================================================================
+
+    .o_list_renderer,
+    .o_list_view,
+    .o_field_one2many .o_list_renderer,
+    .o_field_many2many .o_list_renderer,
+    .modal-body .o_list_renderer {
+
+        input.o_input:not([type="checkbox"]):not([type="radio"]),
+        input.o_field_widget:not([type="checkbox"]):not([type="radio"]),
+        textarea.o_input,
+        textarea.o_field_widget,
+        select.o_input,
+        select.o_field_widget,
+        .o_field_widget input:not([type="checkbox"]):not([type="radio"]),
+        .o_field_widget textarea,
+        .o_field_widget select,
+        .o_input > input,
+        .o_input_dropdown,
+        .o_datepicker,
+        .o_input {
+            @include embedded-list-input-reset;
+            @include field-text-visible;
+        }
+
         td.o_data_cell {
             input:not([type="checkbox"]):not([type="radio"]),
-            select {
-                @include input-underline;
+            textarea,
+            select,
+            .o_input,
+            .o_input_dropdown,
+            .o_datepicker {
+                @include embedded-list-input-reset;
                 @include field-text-visible;
             }
         }
     }
 
     // =========================================================================
-    // FIX: Checkbox / Boolean visual feedback
+    // Checkbox / Boolean visual feedback
     // =========================================================================
     .o_field_boolean,
     .o_field_widget.o_field_boolean {
@@ -258,7 +331,7 @@ $input-bg-readonly: #f8f8f8;
     }
 
     // =========================================================================
-    // FIX: Radio buttons
+    // Radio buttons
     // =========================================================================
     .o_field_radio,
     .o_field_widget.o_field_radio {
@@ -284,6 +357,20 @@ $input-bg-readonly: #f8f8f8;
                     border-color: #714B67 !important;
                 }
             }
+        }
+    }
+
+    // =========================================================================
+    // Reset específico de checkboxes/radios dentro de listas embebidas
+    // para no alterar demasiado la experiencia nativa de las líneas editables.
+    // =========================================================================
+
+    .o_list_renderer {
+        input[type="checkbox"],
+        input[type="radio"] {
+            background-color: initial !important;
+            box-shadow: none !important;
+            cursor: pointer;
         }
     }
 }
